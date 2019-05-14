@@ -1,6 +1,6 @@
-extensions:
+sources:
 - source: https://github.com/eclipse/che-theia
-  folders:
+  extensions:
     - dockerfiles/theia-endpoint-runtime
     - extensions/eclipse-che-theia-plugin
     - extensions/eclipse-che-theia-plugin-ext
@@ -10,17 +10,7 @@ extensions:
     - extensions/eclipse-che-theia-dashboard
     - extensions/eclipse-che-theia-activity-tracker
     - extensions/eclipse-che-theia-about
-  extensionFolders:
-    - dockerfiles/theia-endpoint-runtime
-    - extensions/eclipse-che-theia-plugin
-    - extensions/eclipse-che-theia-plugin-ext
-    - extensions/eclipse-che-theia-terminal
-    - extensions/eclipse-che-theia-user-preferences
-    - extensions/che-theia-hosted-plugin-manager-extension
-    - extensions/eclipse-che-theia-dashboard
-    - extensions/eclipse-che-theia-activity-tracker
-    - extensions/eclipse-che-theia-about
-  pluginFolders:
+  plugins:
     - plugins/containers-plugin
     - plugins/factory-plugin
     - plugins/ports-plugin

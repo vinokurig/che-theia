@@ -8,7 +8,7 @@
  * SPDX-License-Identifier: EPL-2.0
  **********************************************************************/
 
-import { ContainerModule } from 'inversify';
+import { ContainerModule, interfaces } from 'inversify';
 import { ChePluginApiProvider } from './che-plugin-api-provider';
 import { ExtPluginApiProvider } from '@theia/plugin-ext';
 import { ChePluginApiContribution } from './che-plugin-script-service';
@@ -23,8 +23,10 @@ import {
     CheTaskService
 } from '../common/che-protocol';
 import { CheTaskServiceImpl } from './che-task-service';
+import { CheTaskServerImpl } from './che-task-server';
+import { TaskServerImpl } from '@theia/task/lib/node/task-server';
 
-export default new ContainerModule(bind => {
+export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Unbind, isBound: interfaces.IsBound, rebind: interfaces.Rebind) => {
     bind(ChePluginApiProvider).toSelf().inSingletonScope();
     bind(Symbol.for(ExtPluginApiProvider)).toService(ChePluginApiProvider);
 
@@ -48,4 +50,7 @@ export default new ContainerModule(bind => {
         }
         )
     ).inSingletonScope();
+
+    bind(CheTaskServerImpl).toSelf().inSingletonScope();
+    rebind(TaskServerImpl).toService(CheTaskServerImpl);
 });

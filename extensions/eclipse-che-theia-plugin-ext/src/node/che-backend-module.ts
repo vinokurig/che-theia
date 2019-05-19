@@ -52,5 +52,5 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
     ).inSingletonScope();
 
     bind(CheTaskServerImpl).toSelf().inSingletonScope();
-    rebind(TaskServerImpl).toService(CheTaskServerImpl);
+    rebind(TaskServerImpl).to(CheTaskServerImpl);
 });

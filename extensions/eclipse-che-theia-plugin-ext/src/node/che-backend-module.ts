@@ -24,7 +24,6 @@ import {
 } from '../common/che-protocol';
 import { CheTaskServiceImpl } from './che-task-service';
 import { CheTaskServerImpl } from './che-task-server';
-import { TaskServerImpl } from '@theia/task/lib/node/task-server';
 
 export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Unbind, isBound: interfaces.IsBound, rebind: interfaces.Rebind) => {
     bind(ChePluginApiProvider).toSelf().inSingletonScope();
@@ -52,5 +51,4 @@ export default new ContainerModule((bind: interfaces.Bind, unbind: interfaces.Un
     ).inSingletonScope();
 
     bind(CheTaskServerImpl).toSelf().inSingletonScope();
-    rebind(TaskServerImpl).to(CheTaskServerImpl);
 });

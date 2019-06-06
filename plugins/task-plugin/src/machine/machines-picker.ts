@@ -11,11 +11,21 @@
 import { injectable, inject } from 'inversify';
 import * as theia from '@theia/plugin';
 import { CheWorkspaceClient } from '../che-workspace-client';
+import { che } from '@eclipse-che/api';
 
 const MACHINES_PLACE_HOLDER = 'Pick a machine to run the task';
+const RECIPE_CONTAINER_SOURCE = 'recipe';
+const CONTAINER_SOURCE_ATTRIBUTE = 'source';
+
+export interface WorkspaceContainer extends che.workspace.Machine {
+    name: string
+}
 
 @injectable()
 export class MachinesPicker {
+
+    private isOpen: boolean;
+    private hideToolContainers: boolean;
 
     @inject(CheWorkspaceClient)
     protected readonly cheWorkspaceClient!: CheWorkspaceClient;
@@ -25,7 +35,16 @@ export class MachinesPicker {
      * Shows a quick open widget allows to pick a machine if there are several ones.
      */
     async pick(): Promise<string> {
-        const machines = await this.getMachines();
+
+        if (this.isOpen) {
+            // trigger show/hide tool containers
+            this.hideToolContainers = !this.hideToolContainers;
+        } else {
+            this.isOpen = true;
+            this.hideToolContainers = true;
+        }
+
+        const machines = await this.getMachines(this.hideToolContainers);
         if (machines.length === 1) {
             return Promise.resolve(machines[0]);
         }
@@ -38,7 +57,7 @@ export class MachinesPicker {
         return this.showMachineQuickPick(items);
     }
 
-    protected async getMachines(): Promise<string[]> {
+    protected async getMachines(hideToolContainers: boolean): Promise<string[]> {
         const machineNames: string[] = [];
         const machines = await this.cheWorkspaceClient.getMachines();
         if (!machines) {
@@ -46,9 +65,18 @@ export class MachinesPicker {
         }
 
         for (const machineName in machines) {
-            if (machines.hasOwnProperty(machineName)) {
-                machineNames.push(machineName);
+            if (!machines.hasOwnProperty(machineName)) {
+                continue;
             }
+
+            if (hideToolContainers) {
+                const machine = machines[machineName];
+                if (machine.attributes && (!machine.attributes[CONTAINER_SOURCE_ATTRIBUTE] || machine.attributes[CONTAINER_SOURCE_ATTRIBUTE] === RECIPE_CONTAINER_SOURCE)) {
+                    continue;
+                }
+            }
+
+            machineNames.push(machineName);
         }
         return machineNames;
     }

@@ -45,9 +45,9 @@ export class MachinesPicker {
         }
 
         const machines = await this.getMachines(this.hideToolContainers);
-        if (machines.length === 1) {
-            return Promise.resolve(machines[0]);
-        }
+        // if (machines.length === 1) {
+            // return Promise.resolve(machines[0]);
+        // }
 
         const items: string[] = [];
         for (const machineName of machines) {

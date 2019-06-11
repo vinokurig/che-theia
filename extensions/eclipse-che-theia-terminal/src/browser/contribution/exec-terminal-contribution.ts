@@ -12,7 +12,7 @@ import { injectable, inject } from 'inversify';
 import { CommandRegistry, MenuModelRegistry, Command } from '@theia/core/lib/common';
 import { ApplicationShell, KeybindingRegistry, Key, KeyCode, KeyModifier, QuickOpenContribution, QuickOpenHandlerRegistry } from '@theia/core/lib/browser';
 import { TerminalQuickOpenService } from './terminal-quick-open';
-import { TerminalFrontendContribution, TerminalMenus } from '@theia/terminal/lib/browser/terminal-frontend-contribution';
+import { TerminalFrontendContribution, TerminalMenus, TerminalCommands } from '@theia/terminal/lib/browser/terminal-frontend-contribution';
 import { TerminalApiEndPointProvider } from '../server-definition/terminal-proxy-creator';
 import { BrowserMainMenuFactory } from '@theia/core/lib/browser/menu/browser-menu-plugin';
 import { MenuBar as MenuBarWidget } from '@phosphor/widgets';
@@ -60,6 +60,17 @@ export class ExecTerminalFrontendContribution extends TerminalFrontendContributi
     async registerCommands(registry: CommandRegistry) {
         const serverUrl = <URI | undefined>await this.termApiEndPointProvider();
         if (serverUrl) {
+            registry.registerCommand(TerminalCommands.TERMINAL_FIND_TEXT);
+            registry.registerHandler(TerminalCommands.TERMINAL_FIND_TEXT.id, {
+                isEnabled: () => this.shell.activeWidget instanceof TerminalWidget,
+                execute: () => (this.shell.activeWidget as TerminalWidget).showSearchWidget()
+            });
+            registry.registerCommand(TerminalCommands.TERMINAL_FIND_TEXT_CANCEL);
+            registry.registerHandler(TerminalCommands.TERMINAL_FIND_TEXT_CANCEL.id, {
+                isEnabled: () => this.shell.activeWidget instanceof TerminalWidget,
+                execute: () => (this.shell.activeWidget as TerminalWidget).hideSearchWidget()
+            });
+
             registry.registerCommand(NewTerminalInSpecificContainer, {
                 execute: (containerNameToExecute: string) => {
                     if (containerNameToExecute) {
@@ -195,6 +206,16 @@ export class ExecTerminalFrontendContribution extends TerminalFrontendContributi
             registry.registerKeybinding({
                 command: NewTerminalInSpecificContainer.id,
                 keybinding: 'ctrlcmd+`'
+            });
+            registry.registerKeybinding({
+                command: TerminalCommands.TERMINAL_FIND_TEXT.id,
+                keybinding: 'ctrlcmd+f',
+                context: TerminalKeybindingContext.contextId
+            });
+            registry.registerKeybinding({
+                command: TerminalCommands.TERMINAL_FIND_TEXT_CANCEL.id,
+                keybinding: 'esc',
+                context: TerminalKeybindingContext.contextId
             });
             this.registerTerminalKeybindings(registry);
         } else {

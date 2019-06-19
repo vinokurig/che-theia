@@ -19,7 +19,7 @@ WORKDIR ${HOME}
 ARG GITHUB_TOKEN
 
 # Define upstream version of theia to use
-ARG THEIA_VERSION=0.5.0
+ARG THEIA_VERSION=master
 
 ENV NODE_OPTIONS="--max-old-space-size=4096"
 
@@ -110,7 +110,9 @@ COPY --from=builder /home/theia-dev/theia-source-code/production/plugins /defaul
 # Install bzip2 to unpack files
 # Install which tool in order to search git
 # Install curl and bash
-RUN apk add --update --no-cache sudo git bzip2 which bash curl
+# Install ssh for cloning ssh-repositories
+# Install less for handling git diff properly
+RUN apk add --update --no-cache sudo git bzip2 which bash curl openssh openssh-keygen less
 RUN adduser -D -S -u 1001 -G root -h ${HOME} -s /bin/sh theia \
     && echo "%wheel ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers \
     # Create /projects for Che

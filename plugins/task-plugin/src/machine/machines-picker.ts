@@ -45,6 +45,8 @@ export class MachinesPicker {
         }
 
         const machines = await this.getMachines(this.hideToolContainers);
+        console.log(1);
+        console.log(machines);
         // if (machines.length === 1) {
             // return Promise.resolve(machines[0]);
         // }
@@ -53,6 +55,8 @@ export class MachinesPicker {
         for (const machineName of machines) {
             items.push(machineName);
         }
+        console.log(2);
+        console.log(items);
 
         return this.showMachineQuickPick(items);
     }
@@ -60,6 +64,10 @@ export class MachinesPicker {
     protected async getMachines(hideToolContainers: boolean): Promise<string[]> {
         const machineNames: string[] = [];
         const machines = await this.cheWorkspaceClient.getMachines();
+        console.log(3);
+        console.log(machines);
+        console.log('hidetoolingcontainers');
+        console.log(hideToolContainers);
         if (!machines) {
             return machineNames;
         }

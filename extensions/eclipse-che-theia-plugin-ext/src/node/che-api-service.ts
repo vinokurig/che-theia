@@ -17,7 +17,7 @@ import { TelemetryClient, Event, EventProperties, IRequestError } from '@dfatwor
 export class CheApiServiceImpl implements CheApiService {
 
     private workspaceRestAPI: IRemoteAPI | undefined;
-    private telemetryClient: TelemetryClient = new TelemetryClient(undefined, 'https://localhost:4567');
+    private telemetryClient: TelemetryClient = new TelemetryClient(undefined, 'http://localhost:4567');
 
     async currentWorkspace(): Promise<cheApi.workspace.Workspace> {
         try {

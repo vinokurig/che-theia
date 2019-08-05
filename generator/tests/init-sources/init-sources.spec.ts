@@ -19,6 +19,8 @@ import { CliError } from "../../src/cli-error";
 import * as yargs from 'yargs';
 import { YargsMockup } from "../cdn.spec";
 
+jest.setTimeout(10000);
+
 describe("Test Extensions", () => {
 
     const THEIA_DUMMY_VERSION = '1.2.3';

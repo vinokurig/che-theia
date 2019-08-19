@@ -8,15 +8,11 @@
 # Contributors:
 #   Red Hat, Inc. - initial API and implementation
 
-FROM ${BUILD_ORGANIZATION}/${BUILD_PREFIX}-theia:${BUILD_TAG} as node-dependencies-provider
+FROM ${BUILD_ORGANIZATION}/${BUILD_PREFIX}-theia:${BUILD_TAG} as builder
 
-#  Image to build remote binary based on che-theia node_dependencies.
-FROM node:10.16-alpine as builder
+USER root
 
-COPY --from=node-dependencies-provider  /home/theia/node_modules /home/theia/node_modules
-
-RUN apk add --update --no-cache && \
-    cd home/theia && \
+RUN cd /home/theia && \
     yarn global add nexe@3.3.2 && nexe -v && \
     # Build remote binary with node runtime 10.14.2 and che-theia node dependencis. nexe iclude to the binary only
     # used dependencies, that's why binary should not be to much big.

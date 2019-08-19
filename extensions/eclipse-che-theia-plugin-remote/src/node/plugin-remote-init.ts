@@ -26,7 +26,7 @@ import { DummyTraceLogger } from './dummy-trace-logger';
 import pluginRemoteBackendModule from './plugin-remote-backend-module';
 import { TerminalContainerAware } from './terminal-container-aware';
 import { PluginDiscovery } from './plugin-discovery';
-import { DebugContributionFilter } from './debug-configurations-aware';
+import { DebugContributionFilter } from './debug-configuration-filter';
 
 interface CheckAliveWS extends ws {
     alive: boolean;

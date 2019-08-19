@@ -12,7 +12,11 @@
 set -e
 set -o pipefail
 
+echo "Check local build..."
+
 yarn
+
+echo "Local build successfully completed."
 
 if [ "${1:-}" = "--pr" ]; then
     echo "Building PR images..."

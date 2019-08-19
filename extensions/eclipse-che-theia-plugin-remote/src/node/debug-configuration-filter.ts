@@ -21,7 +21,7 @@ export class DebugContributionFilter {
 
         const registerDebuggersContributions = (pluginFolder: string, contributions: DebuggerContribution[]) => {
             for (const contrib of contributions) {
-                contrib.configurationSnippets = contrib.configurationSnippets.filter(snippet => !snippet.body.launch || snippet.body.launch !== 'launch');
+                contrib.configurationSnippets = contrib.configurationSnippets.filter(snippet => !snippet.body.request || snippet.body.request !== 'launch');
             }
 
             return originalRegisterDebuggersContributions(pluginFolder, contributions);

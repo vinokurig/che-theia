@@ -13,13 +13,15 @@ FROM ${BUILD_ORGANIZATION}/${BUILD_PREFIX}-theia:${BUILD_TAG} as builder
 USER root
 
 RUN cd /home/theia && \
-    yarn global add nexe@3.3.2 && nexe -v && \
+    yarn global add pkg@4.4.0  && pkg -v && \
     # Build remote binary with node runtime 10.14.2 and che-theia node dependencies. nexe icludes to the binary only
     # necessary dependencies.
-    nexe node_modules/@eclipse-che/theia-remote/lib/node/plugin-remote.js -t alpine-x64-10.14.2 -o /plugin-remote
+    pkg node_modules/@eclipse-che/theia-remote/lib/node/plugin-remote.js -t node10-alpine-x64 -o /plugin-remote
 
 # Light image without node. We include remote binary to this image.
 FROM alpine
+
+RUN apk add --update --no-cache libstdc++
 
 RUN mkdir /home/theia
 

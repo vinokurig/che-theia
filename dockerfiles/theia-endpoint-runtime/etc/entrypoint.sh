@@ -49,10 +49,9 @@ set -e
 # on callback, kill the last background process, which is `tail -f /dev/null` and execute the specified handler
 trap 'responsible_shutdown' HUP TERM INT
 
-cd ${HOME}
-
 # run theia endpoint
-/plugin-remote &
+CWD=$(cd "$(dirname "$0")"; pwd)
+${CWD}/plugin-remote &
 
 PID=$!
 

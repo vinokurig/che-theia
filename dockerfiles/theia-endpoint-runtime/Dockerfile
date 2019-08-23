@@ -25,7 +25,8 @@ RUN mkdir /home/theia
 
 ENV HOME=/home/theia
 
-COPY --from=builder  /plugin-remote /plugin-remote
+COPY --from=builder  /plugin-remote /remote-plugin-launcher/plugin-remote
+ADD etc/entrypoint.sh /remote-plugin-launcher/entrypoint.sh
 
 RUN mkdir /projects \
     # Store passwd/group as template files
@@ -36,6 +37,3 @@ RUN mkdir /projects \
         echo "Changing permissions on ${f}" && chgrp -R 0 ${f} && \
         chmod -R g+rwX ${f}; \
     done
-
-ADD etc/entrypoint.sh /entrypoint.sh
-ENTRYPOINT ["/entrypoint.sh"]

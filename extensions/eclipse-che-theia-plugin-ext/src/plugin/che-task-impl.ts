@@ -8,17 +8,15 @@
  * SPDX-License-Identifier: EPL-2.0
  **********************************************************************/
 import { CheTask, CheTaskMain, PLUGIN_RPC_CONTEXT } from '../common/che-protocol';
-import { TaskRunner, Disposable, Task, TaskInfo, TaskExitedEvent, TaskConfiguration } from '@eclipse-che/plugin';
+import { TaskRunner, Disposable, TaskInfo, TaskExitedEvent, TaskConfiguration } from '@eclipse-che/plugin';
 import { RPCProtocol } from '@theia/plugin-ext/lib/common/rpc-protocol';
 
 export class CheTaskImpl implements CheTask {
     private readonly cheTaskMain: CheTaskMain;
     private readonly runnerMap: Map<string, TaskRunner>;
-    private readonly taskMap: Map<number, Task>;
     constructor(rpc: RPCProtocol) {
         this.cheTaskMain = rpc.getProxy(PLUGIN_RPC_CONTEXT.CHE_TASK_MAIN);
         this.runnerMap = new Map();
-        this.taskMap = new Map();
     }
     async registerTaskRunner(type: string, runner: TaskRunner): Promise<Disposable> {
         this.runnerMap.set(type, runner);
@@ -30,33 +28,17 @@ export class CheTaskImpl implements CheTask {
         };
     }
 
-    async $runTask(id: number, config: TaskConfiguration, ctx?: string): Promise<void> {
+    async $runTask(config: TaskConfiguration, ctx?: string): Promise<TaskInfo> {
         const runner = this.runnerMap.get(config.type);
         if (runner) {
-            const task = await runner.run(config, ctx);
-            this.taskMap.set(id, task);
+            return await runner.run(config, ctx);
         }
     }
 
-    async $killTask(id: number): Promise<void> {
-        const task = this.taskMap.get(id);
-        if (task) {
-            await task.kill();
-            this.taskMap.delete(id);
-        }
-    }
-
-    async $getTaskInfo(id: number): Promise<TaskInfo | undefined> {
-        const task = this.taskMap.get(id);
-        if (task) {
-            return task.getRuntimeInfo();
-        }
-    }
-
-    async $onTaskExited(id: number): Promise<void> {
-        const task = this.taskMap.get(id);
-        if (task) {
-            this.taskMap.delete(id);
+    async $killTask(taskInfo: TaskInfo): Promise<void> {
+        const runner = this.runnerMap.get(taskInfo.config.type);
+        if (runner) {
+            return await runner.kill(taskInfo);
         }
     }
 
